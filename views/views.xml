@@ -1,0 +1,85 @@
+<odoo>
+  <data>
+    <record id="fleet_vehicle_request_view_tree" model="ir.ui.view">
+      <field name="name">fleet.vehicle.request.tree</field>
+      <field name="model">fleet.vehicle.request</field>
+      <field name="arch" type="xml">
+        <tree string="Solicitudes de vehículos">
+          <field name="name"/>
+          <field name="vehicle_model_id"/>
+          <field name="license_plate"/>
+          <field name="contact_name"/>
+          <field name="phone"/>
+          <field name="create_date"/>
+          <field name="state"/>
+          <field name="vehicle_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="fleet_vehicle_request_view_form" model="ir.ui.view">
+      <field name="name">fleet.vehicle.request.form</field>
+      <field name="model">fleet.vehicle.request</field>
+      <field name="arch" type="xml">
+        <form string="Solicitud de vehículo">
+          <header>
+            <button name="action_approve" type="object" string="Aprobar y crear vehículo"
+                    class="oe_highlight" confirm="Esto creará un vehículo en la flotilla."
+                    invisible="state != 'pending'"/>
+            <button name="action_reject" type="object" string="Rechazar"
+                    confirm="¿Seguro que deseas rechazar esta solicitud?"
+                    invisible="state != 'pending'"/>
+            <field name="state" widget="statusbar" statusbar_visible="pending,approved,rejected"/>
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <label for="name"/>
+              <h1><field name="name"/></h1>
+            </div>
+            <group>
+              <group string="Vehículo">
+                <field name="vehicle_model_id"/>
+                <field name="license_plate"/>
+                <field name="vehicle_id" invisible="not vehicle_id"/>
+              </group>
+              <group string="Solicitante">
+                <field name="contact_name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="create_date"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="fleet_vehicle_request_view_search" model="ir.ui.view">
+      <field name="name">fleet.vehicle.request.search</field>
+      <field name="model">fleet.vehicle.request</field>
+      <field name="arch" type="xml">
+        <search string="Solicitudes de vehículos">
+          <field name="name"/>
+          <field name="vehicle_model_id"/>
+          <field name="license_plate"/>
+          <field name="contact_name"/>
+          <filter name="pending" string="Pendientes de revisión" domain="[('state', '=', 'pending')]"/>
+          <filter name="approved" string="Aprobadas" domain="[('state', '=', 'approved')]"/>
+          <filter name="rejected" string="Rechazadas" domain="[('state', '=', 'rejected')]"/>
+        </search>
+      </field>
+    </record>
+
+    <record id="fleet_vehicle_request_action" model="ir.actions.act_window">
+      <field name="name">Solicitudes de vehículos</field>
+      <field name="res_model">fleet.vehicle.request</field>
+      <field name="view_mode">tree,form</field>
+      <field name="search_view_id" ref="fleet_vehicle_request_view_search"/>
+      <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <menuitem id="fleet_vehicle_request_menu" name="Solicitudes de vehículos"
+              parent="fleet.menu_root" action="fleet_vehicle_request_action"
+              groups="fleet.fleet_group_manager" sequence="30"/>
+  </data>
+</odoo>
