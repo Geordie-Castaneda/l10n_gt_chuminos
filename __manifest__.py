@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Flotilla - Solicitudes de vehículos",
+    'name': "Operaciones de transporte",
 
-    'summary': "Formulario público para solicitar el registro de vehículos en flotilla",
+    'summary': "Gestión de vehículos, pilotos y contactos de flotilla",
 
     'description': """
-Permite recibir solicitudes públicas para registrar vehículos y revisarlas
-desde la aplicación Flotilla antes de crear cada vehículo.
+Permite registrar vehículos y sus pilotos desde el sitio web, creando los
+vehículos en flotilla y sus contactos asociados.
     """,
 
     'author': "My Company",
@@ -16,7 +16,8 @@ desde la aplicación Flotilla antes de crear cada vehículo.
     # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '17.0.1.1.0',
+    'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'fleet', 'website'],

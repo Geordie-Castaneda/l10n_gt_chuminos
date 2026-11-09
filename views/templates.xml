@@ -5,11 +5,11 @@
         <section class="container py-5">
           <div class="row justify-content-center">
             <div class="col-lg-8">
-              <h1>Solicitud para agregar un vehículo</h1>
-              <p>Completa estos datos. La solicitud será revisada antes de agregar el vehículo a la flotilla.</p>
+              <h1>Registro de vehículo</h1>
+              <p>Completa los datos del vehículo y de su conductor para agregarlos a la flotilla.</p>
 
               <div t-if="success" class="alert alert-success" role="status">
-                Gracias. Recibimos tu solicitud y será revisada por el equipo de flotilla.
+                El vehículo y el contacto del conductor se registraron correctamente.
               </div>
 
               <t t-if="not success">
@@ -17,10 +17,12 @@
                   <t t-esc="error"/>
                 </div>
                 <div t-if="not vehicle_models" class="alert alert-warning" role="alert">
-                  No hay modelos de vehículos disponibles para solicitar. Comunícate con el equipo de flotilla.
+                  No hay modelos de vehículos disponibles. Comunícate con el equipo de flotilla.
                 </div>
-                <form t-if="vehicle_models" action="/flotilla/solicitud" method="post" class="mt-4">
+                <form t-if="vehicle_models" action="/flotilla/solicitud" method="post"
+                      enctype="multipart/form-data" class="mt-4">
                   <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                  <h3 class="mt-4">Vehículo</h3>
                   <div class="mb-3">
                     <label class="form-label" for="vehicle_model_id">Marca y modelo *</label>
                     <select id="vehicle_model_id" name="vehicle_model_id" class="form-select" required="required">
@@ -38,9 +40,38 @@
                            t-att-value="form_values.get('license_plate')" required="required" maxlength="64"/>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label" for="contact_name">Tu nombre *</label>
+                    <label class="form-label" for="model_year">Año</label>
+                    <input id="model_year" name="model_year" type="number" min="1886" max="2100"
+                           class="form-control" t-att-value="form_values.get('model_year')"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="color">Color</label>
+                    <input id="color" name="color" type="text" class="form-control"
+                           t-att-value="form_values.get('color')" maxlength="64"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="odometer">Kilometraje (km)</label>
+                    <input id="odometer" name="odometer" type="number" min="0" step="0.01"
+                           class="form-control" t-att-value="form_values.get('odometer')"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="vehicle_photos">Fotos del vehículo</label>
+                    <input id="vehicle_photos" name="vehicle_photos" type="file" class="form-control"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                           multiple="multiple"/>
+                    <div class="form-text">Puedes adjuntar hasta 5 fotos JPG, PNG o WebP (máximo 5 MB cada una).</div>
+                  </div>
+
+                  <h3 class="mt-5">Contacto del conductor</h3>
+                  <div class="mb-3">
+                    <label class="form-label" for="contact_name">Nombre completo *</label>
                     <input id="contact_name" name="contact_name" type="text" class="form-control"
                            t-att-value="form_values.get('contact_name')" required="required" maxlength="255"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="vat">NIT</label>
+                    <input id="vat" name="vat" type="text" class="form-control"
+                           t-att-value="form_values.get('vat')" maxlength="64"/>
                   </div>
                   <div class="mb-3">
                     <label class="form-label" for="phone">Teléfono *</label>
@@ -48,11 +79,47 @@
                            t-att-value="form_values.get('phone')" required="required" maxlength="64"/>
                   </div>
                   <div class="mb-3">
+                    <label class="form-label" for="mobile">Móvil</label>
+                    <input id="mobile" name="mobile" type="tel" class="form-control"
+                           t-att-value="form_values.get('mobile')" maxlength="64"/>
+                  </div>
+                  <div class="mb-3">
                     <label class="form-label" for="email">Correo electrónico</label>
                     <input id="email" name="email" type="email" class="form-control"
                            t-att-value="form_values.get('email')" maxlength="255"/>
                   </div>
-                  <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+                  <div class="mb-3">
+                    <label class="form-label" for="street">Calle y número</label>
+                    <input id="street" name="street" type="text" class="form-control"
+                           t-att-value="form_values.get('street')" maxlength="255"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="city">Ciudad</label>
+                    <input id="city" name="city" type="text" class="form-control"
+                           t-att-value="form_values.get('city')" maxlength="128"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="state_name">Estado / departamento</label>
+                    <input id="state_name" name="state_name" type="text" class="form-control"
+                           t-att-value="form_values.get('state_name')" maxlength="128"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="zip">Código postal</label>
+                    <input id="zip" name="zip" type="text" class="form-control"
+                           t-att-value="form_values.get('zip')" maxlength="24"/>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="country_id">País</label>
+                    <select id="country_id" name="country_id" class="form-select">
+                      <option value="">Selecciona un país</option>
+                      <option t-foreach="countries" t-as="country"
+                              t-att-value="country.id"
+                              t-att-selected="str(country.id) == str(form_values.get('country_id'))">
+                        <t t-esc="country.name"/>
+                      </option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Crear vehículo y contacto</button>
                 </form>
               </t>
             </div>
